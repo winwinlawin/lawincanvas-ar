@@ -11,9 +11,30 @@ html, body {
   overflow: hidden;
   background: #000;
   font-family: sans-serif;
+  position: relative;
 }
 
 a-scene {
+  width: 100%;
+  height: 100%;
+}
+
+/* MindAR injects the live camera feed as a <video> element and renders
+   AR content on a transparent <canvas> above it. Both must fill the
+   viewport and stack correctly, or the video feed stays hidden. */
+video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+a-scene canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 }
