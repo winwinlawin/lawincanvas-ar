@@ -16,9 +16,10 @@
 <body>
 
   <a-scene
+    embedded
     mindar-image="imageTargetSrc: assets/targets/targets.mind; autoStart: true; uiScanning: no; uiLoading: no;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights"
+    renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
   >
