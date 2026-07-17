@@ -2,40 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>Lawin Canvas</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LC001-V2</title>
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- A-Frame 1.6.0 -->
+  <!-- A-Frame (required by MindAR's A-Frame build) -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
-  <!-- MindAR 1.2.5 (image tracking, A-Frame build) -->
+  <!-- MindAR Image Tracking (A-Frame integration) -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
 
   <a-scene
-    embedded
-    mindar-image="imageTargetSrc: assets/targets/targets.mind; autoStart: true; uiScanning: no; uiLoading: no;"
+    mindar-image="imageTargetSrc: targets/targets.mind;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
+    renderer="colorManagement: true, physicallyCorrectLights: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
   >
-
     <a-assets></a-assets>
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity id="target-0" mindar-image-target="targetIndex: 0">
+    <a-entity mindar-image-target="targetIndex: 0">
       <a-plane
-        id="plane-0"
+        id="target-plane"
         color="#00FF00"
-        width="1"
-        height="1"
+        opacity="0.7"
         rotation="0 0 0"
         position="0 0 0"
+        width="1.5"
+        height="1.5"
       ></a-plane>
     </a-entity>
 
