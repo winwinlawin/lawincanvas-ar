@@ -52,11 +52,32 @@
       vr-mode-ui="enabled: false"
       device-orientation-permission-ui="enabled: false"
     >
-      <a-assets></a-assets>
+      <a-assets>
+        <video
+          id="video-LC001"
+          src="assets/videos/LC001.mp4"
+          preload="auto"
+          loop
+          playsinline
+          webkit-playsinline
+          crossorigin="anonymous"
+        ></video>
+      </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0">
+        <!-- 2:3 aspect ratio, matching the physical canvas proportions
+             (16x24, 24x36, 32x48, 40x60 in — all reduce to 2:3). -->
+        <a-video
+          id="painting-video-0"
+          src="#video-LC001"
+          width="2"
+          height="3"
+          position="0 0 0"
+          visible="false"
+        ></a-video>
+      </a-entity>
     </a-scene>
 
     <!-- Transparent card shown when a target is detected -->
