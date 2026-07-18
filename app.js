@@ -37,7 +37,6 @@ let lostGraceTimer = null;
 
 const welcomeScreen = document.querySelector("#welcome-screen");
 const startBtn = document.querySelector("#start-btn");
-const arContainer = document.querySelector("#ar-container");
 const sceneEl = document.querySelector("#ar-scene");
 const targetOverlay = document.querySelector("#target-overlay");
 const targetTitleEl = document.querySelector("#target-title");
@@ -72,11 +71,13 @@ async function loadPaintings() {
 }
 
 /**
- * Reveal the AR view and start the MindAR camera/tracking system.
+ * Hide the welcome screen and start the MindAR camera/tracking system.
+ * The AR scene has been rendering (invisible, underneath the welcome
+ * screen) since page load, so it already has correct canvas dimensions
+ * by the time start() is called here.
  */
 function handleStart() {
   welcomeScreen.style.display = "none";
-  arContainer.style.display = "block";
 
   const mindarSystem = sceneEl.systems["mindar-image-system"];
   if (mindarSystem) {
