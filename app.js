@@ -1,20 +1,21 @@
 /**
- * Lawin Canvas — Milestone 2
+ * Lawin Canvas — Milestone 2 (TEMPORARY simplified flow for debugging)
  *
- * Flow:
+ * The title + "Begin" overlay step is temporarily disabled to isolate
+ * the video playback issue. Current flow:
  *  1. Welcome screen shown on load.
  *  2. User taps "Begin AR Experience" -> welcome hides, AR view + camera start.
- *  3. When a known target is detected -> show its title + "Begin" button
- *     in a transparent overlay.
- *  4. User taps "Begin" -> overlay hides, the painting's video starts
- *     playing (looped) anchored on the target.
- *  5. If the target is lost while the video is playing, playback keeps
+ *  3. When a known target is detected -> video plays immediately (looped),
+ *     anchored on the target. No title/Begin overlay shown.
+ *  4. If the target is lost while the video is playing, playback keeps
  *     going for a grace period (LOST_GRACE_MS) in case tracking is only
  *     briefly interrupted. If the target is not found again within that
- *     window, the video is paused/hidden and the target resets, so the
- *     title + Begin overlay will show again next time it's detected.
- *  6. If the target is found again within the grace period, the pending
+ *     window, the video is paused/hidden.
+ *  5. If the target is found again within the grace period, the pending
  *     stop is cancelled and playback continues uninterrupted.
+ *
+ * Once video playback is confirmed working, the title + Begin step will
+ * be restored (see git history / previous file version).
  *
  * Painting data (id, title, targetIndex, video path) is loaded from
  * paintings.json so future targets (LC002, LC003, ...) can be added
@@ -44,12 +45,34 @@ const beginBtn = document.querySelector("#begin-btn");
 const paintingVideoEl = document.querySelector("#painting-video-0");
 
 document.addEventListener("DOMContentLoaded", () => {
+  enableDebugConsoleIfRequested();
+
   loadPaintings();
   bindTargetEvents();
 
   startBtn.addEventListener("click", handleStart);
-  beginBtn.addEventListener("click", handleBegin);
 });
+
+/**
+ * Temporary troubleshooting aid: visiting the site with ?debug=1 in the
+ * URL loads an on-screen console (Eruda) so JS errors and logs can be
+ * read directly on a phone, without needing USB debugging. Safe to leave
+ * in — it only activates when explicitly requested via the URL.
+ */
+function enableDebugConsoleIfRequested() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("debug") !== "1") return;
+
+  const script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/eruda";
+  script.onload = () => {
+    if (window.eruda) {
+      window.eruda.init();
+      console.log("[LawinCanvas] Debug console enabled.");
+    }
+  };
+  document.body.appendChild(script);
+}
 
 /**
  * Load paintings.json and index it by id and by targetIndex
@@ -109,8 +132,8 @@ function bindTargetEvents() {
       // just cancel any pending stop and let playback continue as is.
       cancelLostGraceTimer();
     } else {
-      // Fresh detection — show title + Begin, nothing playing yet.
-      showTargetOverlay(currentPainting);
+      // TEMP: play immediately instead of showing title + Begin overlay.
+      startExperience();
     }
   });
 
@@ -118,55 +141,45 @@ function bindTargetEvents() {
     if (isExperienceActive) {
       // Video is playing — don't stop immediately, start the grace timer.
       startLostGraceTimer();
-    } else {
-      // Overlay was showing but user never pressed Begin — just hide it.
-      hideTargetOverlay();
     }
   });
 }
 
 /**
- * Show the title + Begin button for the detected painting.
+ * Start playing the current painting's video, looped, anchored on the
+ * target. (TEMP: called directly on targetFound, bypassing the
+ * title + Begin overlay while debugging playback.)
  */
-function showTargetOverlay(painting) {
-  targetTitleEl.textContent = painting ? painting.title : "";
-  targetOverlay.style.display = "flex";
-}
+function startExperience() {
+  console.log("[LawinCanvas] startExperience. currentPainting:", currentPainting);
 
-/**
- * Hide the title + Begin overlay.
- */
-function hideTargetOverlay() {
-  targetOverlay.style.display = "none";
-}
-
-/**
- * User pressed Begin: hide the overlay and start the painting's video,
- * looped, anchored on the target.
- */
-function handleBegin() {
   if (!currentPainting) {
-    console.warn("[LawinCanvas] Begin pressed with no active painting.");
+    console.warn("[LawinCanvas] startExperience called with no active painting.");
     return;
   }
 
-  hideTargetOverlay();
   isExperienceActive = true;
 
   paintingVideoEl.setAttribute("visible", "true");
+  console.log("[LawinCanvas] painting-video-0 visible set to true.");
+
   const videoEl = document.querySelector("#video-LC001");
-  if (videoEl) {
-    videoEl.currentTime = 0;
-    videoEl.play().catch((err) => {
+  if (!videoEl) {
+    console.error("[LawinCanvas] #video-LC001 element not found.");
+    return;
+  }
+
+  videoEl.currentTime = 0;
+  videoEl.play()
+    .then(() => console.log("[LawinCanvas] Video play() succeeded."))
+    .catch((err) => {
       console.error("[LawinCanvas] Video playback failed:", err);
     });
-  }
 }
 
 /**
  * Start (or restart) the 6-second countdown after the target is lost.
- * If it fires without being cancelled, the video is stopped and the
- * target resets to its "not yet started" state.
+ * If it fires without being cancelled, the video is stopped.
  */
 function startLostGraceTimer() {
   cancelLostGraceTimer();
@@ -196,5 +209,4 @@ function stopExperience() {
     videoEl.pause();
   }
   paintingVideoEl.setAttribute("visible", "false");
-  hideTargetOverlay();
 }
