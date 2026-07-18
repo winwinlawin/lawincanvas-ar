@@ -2,43 +2,71 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LC001-V2</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Lawin Canvas — AR Platform</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="style.css" />
 
-  <!-- A-Frame (required by MindAR's A-Frame build) -->
+  <!-- A-Frame 1.6.0 -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
 
-  <!-- MindAR Image Tracking (A-Frame integration) -->
+  <!-- MindAR 1.2.5 (image tracking, A-Frame build) -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
 </head>
 <body>
 
-  <a-scene
-    mindar-image="imageTargetSrc: targets/targets.mind;"
-    color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights: true"
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: false"
-  >
-    <a-assets></a-assets>
+  <!-- ===================== WELCOME SCREEN ===================== -->
+  <div id="welcome-screen">
+    <div class="dust-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+    <div class="welcome-inner">
+      <div class="logo-glow" aria-hidden="true"></div>
+      <img class="logo" src="assets/icons/logo.png" alt="Lawin Canvas" />
 
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-plane
-        id="target-plane"
-        color="#00FF00"
-        opacity="0.7"
-        rotation="0 0 0"
-        position="0 0 0"
-        width="1.5"
-        height="1.5"
-      ></a-plane>
-    </a-entity>
+      <p class="welcome-copy">
+        Welcome to Lawin Canvas.<br />
+        Where paintings come alive through stories, motion, and inspiration.
+      </p>
 
-  </a-scene>
+      <button id="start-btn" class="begin-button">Begin AR Experience</button>
+    </div>
+
+    <p class="footer-tagline">Scan. Discover. Experience.</p>
+  </div>
+
+  <!-- ===================== AR CONTAINER (camera + tracking) ===================== -->
+  <div id="ar-container">
+    <a-scene
+      id="ar-scene"
+      embedded
+      mindar-image="imageTargetSrc: assets/targets/targets.mind; autoStart: false; uiScanning: no; uiLoading: no;"
+      color-space="sRGB"
+      renderer="colorManagement: true, physicallyCorrectLights, alpha: true"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+    >
+      <a-assets></a-assets>
+
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+      <a-entity id="target-0" mindar-image-target="targetIndex: 0"></a-entity>
+    </a-scene>
+
+    <!-- Transparent card shown when a target is detected -->
+    <div id="target-overlay">
+      <div class="target-card">
+        <h2 id="target-title"></h2>
+        <button id="begin-btn" class="experience-button">Begin</button>
+      </div>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>
