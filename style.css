@@ -189,7 +189,11 @@ body {
   position: fixed;
   inset: 0;
   z-index: 5;
-  display: none; /* shown via JS after "Begin AR Experience" is pressed */
+  /* Always rendered (never display:none) so the a-scene initializes
+     with correct canvas dimensions from page load. It stays visually
+     hidden underneath #welcome-screen (z-index 30) until that is
+     dismissed — no camera permission prompt appears until start() is
+     called on button press, so nothing is visible here in the meantime. */
 }
 
 #ar-scene {
