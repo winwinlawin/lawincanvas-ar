@@ -46,23 +46,27 @@ a-scene {
 }
 
 /* MindAR injects the live camera feed as a <video> element and renders
-   AR content on a transparent <canvas> above it. Both must fill the
-   viewport and stack correctly, or the camera feed stays hidden. */
-a-scene video {
-  position: absolute;
+   AR content on a transparent <canvas> above it. These may end up as
+   siblings of <a-scene> rather than children, so selectors are NOT
+   scoped to a-scene. Both must fill the viewport and stack correctly,
+   or the camera feed stays hidden. */
+video {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
+  z-index: 4;
 }
 
-a-scene canvas {
-  position: absolute;
+canvas {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
+  z-index: 6;
 }
 
 /* ===================== WELCOME SCREEN ===================== */
