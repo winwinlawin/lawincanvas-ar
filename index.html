@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Lawin Canvas</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- A-Frame (required by MindAR's A-Frame build) -->
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+  <!-- MindAR Image Tracking (A-Frame integration) -->
+  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+</head>
+<body>
+
+  <!-- ===================== WELCOME SCREEN ===================== -->
+  <div id="welcome-screen">
+    <div class="dust-field" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="welcome-inner">
+      <div class="logo-glow" aria-hidden="true"></div>
+      <img class="logo" src="assets/icons/logo.png" alt="Lawin Canvas" />
+
+      <p class="welcome-copy">
+        Welcome to Lawin Canvas.<br />
+        Where paintings come alive through stories, motion, and inspiration.
+      </p>
+
+      <button id="start-btn" class="begin-button">Begin AR Experience</button>
+    </div>
+
+    <p class="footer-tagline">Scan. Discover. Experience.</p>
+  </div>
+
+  <!-- ===================== AR SCENE (camera + tracking) ===================== -->
+  <a-scene
+    id="ar-scene"
+    mindar-image="imageTargetSrc: assets/targets/targets.mind; autoStart: false;"
+    color-space="sRGB"
+    renderer="colorManagement: true, physicallyCorrectLights: true"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false"
+  >
+    <a-assets>
+      <video
+        id="video-LC001"
+        src="assets/videos/LC001.mp4"
+        preload="auto"
+        loop
+        playsinline
+        webkit-playsinline
+        crossorigin="anonymous"
+      ></video>
+    </a-assets>
+
+    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+
+    <a-entity mindar-image-target="targetIndex: 0">
+      <!-- Landscape orientation (video is wider than tall), 3:2 ratio. -->
+      <a-video
+        id="painting-video-0"
+        src="#video-LC001"
+        width="3"
+        height="2"
+        position="0 0 0"
+      ></a-video>
+    </a-entity>
+  </a-scene>
+
+  <script src="app.js"></script>
+</body>
+</html>
