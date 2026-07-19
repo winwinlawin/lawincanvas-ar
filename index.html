@@ -42,6 +42,13 @@
   </div>
 
   <!-- ===================== AR SCENE (camera + tracking) ===================== -->
+  <!-- TEMPORARILY reverted to LC001 only. The multi-painting (LC001-LC033)
+       version was rolled back because targets.mind hadn't been recompiled
+       yet with all 33 images, causing a mismatch that broke the camera.
+       Once all 33 painting images + videos are ready and targets.mind is
+       recompiled with all of them, re-expand this the same way as before
+       (one <video> + one <a-entity>/<a-video> pair per painting, plus a
+       matching PAINTINGS entry in app.js). -->
   <a-scene
     id="ar-scene"
     mindar-image="imageTargetSrc: assets/targets/targets.mind; autoStart: false;"
@@ -54,7 +61,7 @@
       <video
         id="video-LC001"
         src="assets/videos/LC001.mp4"
-        preload="auto"
+        preload="none"
         loop
         playsinline
         webkit-playsinline
@@ -64,7 +71,7 @@
 
     <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity mindar-image-target="targetIndex: 0">
+    <a-entity id="target-0" mindar-image-target="targetIndex: 0">
       <!-- Landscape orientation (video is wider than tall), 3:2 ratio. -->
       <a-video
         id="painting-video-0"
