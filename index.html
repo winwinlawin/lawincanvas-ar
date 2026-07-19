@@ -44,10 +44,9 @@
   <!-- ===================== AR SCENE (camera + tracking) ===================== -->
   <a-scene
     id="ar-scene"
-    embedded
     mindar-image="imageTargetSrc: assets/targets/targets.mind; autoStart: false;"
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights: true"
+    renderer="colorManagement: true, physicallyCorrectLights: true, alpha: true"
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: false"
   >
