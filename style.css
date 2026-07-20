@@ -33,10 +33,6 @@ html, body {
 }
 
 /* ===================== AR SCENE ===================== */
-/* Always rendered from page load (never display:none) so it initializes
-   with correct canvas dimensions. It stays visually hidden underneath
-   #welcome-screen (higher z-index) until that is dismissed. No camera
-   permission prompt appears until start() is called on button press. */
 a-scene {
   position: fixed;
   inset: 0;
@@ -45,12 +41,12 @@ a-scene {
   z-index: 5;
 }
 
-/* MindAR injects the live camera feed as a <video> element and renders
-   AR content on a transparent <canvas> above it. These may end up as
-   siblings of <a-scene> rather than children, so selectors are NOT
-   scoped to a-scene. Both must fill the viewport and stack correctly,
-   or the camera feed stays hidden. */
-video {
+/* MindAR injects the live camera feed as a <video> element appended
+   directly to <body> (a sibling of <a-scene>), and renders AR content
+   on a transparent <canvas>. Only style THAT video — not our own
+   painting <video> inside <a-assets>, which must stay hidden since
+   it's only a texture source, not something to display directly. */
+body > video {
   position: fixed;
   top: 0;
   left: 0;
@@ -58,6 +54,10 @@ video {
   height: 100%;
   object-fit: cover;
   z-index: 4;
+}
+
+a-assets video {
+  display: none !important;
 }
 
 canvas {
