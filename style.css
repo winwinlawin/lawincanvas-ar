@@ -33,40 +33,16 @@ html, body {
 }
 
 /* ===================== AR SCENE ===================== */
-a-scene {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 5;
-}
-
-/* MindAR injects the live camera feed as a <video> element appended
-   directly to <body> (a sibling of <a-scene>), and renders AR content
-   on a transparent <canvas>. Only style THAT video — not our own
-   painting <video> inside <a-assets>, which must stay hidden since
-   it's only a texture source, not something to display directly. */
-body > video {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: 4;
-}
+/* TEST: Removed manual positioning rules for a-scene, canvas, and
+   body > video. MindAR injects its own inline styles on these
+   elements to make them fullscreen automatically — official MindAR
+   examples do not override this with custom CSS. Our previous rules
+   may have been conflicting with MindAR's own styling and causing
+   the black screen. Only keep this rule to hide our own hidden
+   source video (the one inside <a-assets>, used only as a texture). */
 
 a-assets video {
   display: none !important;
-}
-
-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 6;
 }
 
 /* ===================== WELCOME SCREEN ===================== */
