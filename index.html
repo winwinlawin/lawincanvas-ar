@@ -97,13 +97,9 @@
   </style>
 </head>
 
-
 <body>
 
-  <!-- =========================
-       WELCOME SCREEN
-  ========================== -->
-
+  <!-- WELCOME SCREEN -->
   <div id="welcomeScreen">
 
     <h1>Lawin Canvas</h1>
@@ -121,19 +117,13 @@
   </div>
 
 
-  <!-- =========================
-       SCAN MESSAGE
-  ========================== -->
-
+  <!-- SCAN MESSAGE -->
   <div id="scanMessage">
     Point your camera at the painting
   </div>
 
 
-  <!-- =========================
-       AR SCENE
-  ========================== -->
-
+  <!-- AR SCENE -->
   <a-scene
 
     id="arScene"
@@ -149,7 +139,7 @@
     renderer="
       colorManagement: true;
       physicallyCorrectLights: true;
-      alpha: true;
+      alpha: false;
     "
 
     vr-mode-ui="enabled: false"
@@ -158,74 +148,48 @@
 
   >
 
-
-    <!-- =========================
-         VIDEO ASSET
-    ========================== -->
-
+    <!-- VIDEO -->
     <a-assets>
 
       <video
-
         id="video-LC001"
-
         src="assets/videos/LC001.mp4"
-
         preload="auto"
-
         playsinline
         webkit-playsinline
-
         loop
-
         crossorigin="anonymous"
-
       ></video>
 
     </a-assets>
 
 
     <!-- CAMERA -->
-
     <a-camera
       position="0 0 0"
       look-controls="enabled: false"
     ></a-camera>
 
 
-    <!-- =========================
-         PAINTING TARGET
-    ========================== -->
-
+    <!-- PAINTING TARGET -->
     <a-entity
       id="target-LC001"
       mindar-image-target="targetIndex: 0"
     >
 
       <a-video
-
         id="videoPlane"
-
         src="#video-LC001"
-
         width="1"
         height="0.6667"
-
         position="0 0 0"
-
         material="shader: flat;"
-
       ></a-video>
 
     </a-entity>
 
-
   </a-scene>
 
-
-  <!-- =========================
-       JAVASCRIPT
-  ========================== -->
 
   <script>
 
@@ -245,33 +209,15 @@
       document.getElementById("target-LC001");
 
 
-    let started = false;
-    let wasPlaying = false;
-
-
-    /* =================================
-       START EXPERIENCE
-    ================================= */
+    /* START EXPERIENCE */
 
     startButton.addEventListener("click", async () => {
 
       console.log("START EXPERIENCE");
 
-      started = true;
-
       welcomeScreen.style.display = "none";
 
       scanMessage.style.display = "block";
-
-
-      /*
-       * We intentionally DON'T call video.play()
-       * here.
-       *
-       * The video should start when MindAR
-       * actually recognizes the painting.
-       */
-
 
       try {
 
@@ -286,9 +232,7 @@
     });
 
 
-    /* =================================
-       PAINTING FOUND
-    ================================= */
+    /* PAINTING FOUND */
 
     target.addEventListener("targetFound", async () => {
 
@@ -296,22 +240,9 @@
 
       scanMessage.style.display = "none";
 
-
-      /*
-       * Resume from current position.
-       *
-       * If first detection:
-       * starts at 0.
-       *
-       * If target was lost:
-       * continues where it stopped.
-       */
-
       try {
 
         await video.play();
-
-        wasPlaying = true;
 
         console.log("LC001 VIDEO PLAYING");
 
@@ -319,19 +250,12 @@
 
         console.log("VIDEO PLAY FAILED:", error);
 
-        /*
-         * If browser blocks playback,
-         * we log the exact problem.
-         */
-
       }
 
     });
 
 
-    /* =================================
-       PAINTING LOST
-    ================================= */
+    /* PAINTING LOST */
 
     target.addEventListener("targetLost", () => {
 
@@ -339,22 +263,10 @@
 
       video.pause();
 
-      wasPlaying = false;
-
-      /*
-       * IMPORTANT:
-       * We DON'T reset currentTime.
-       *
-       * So when the painting comes back,
-       * the video continues from where it stopped.
-       */
-
     });
 
 
-    /* =================================
-       VIDEO EVENTS
-    ================================= */
+    /* VIDEO STATUS */
 
     video.addEventListener("loadeddata", () => {
 
@@ -380,7 +292,7 @@
     video.addEventListener("pause", () => {
 
       console.log(
-        "LC001 VIDEO PAUSED at:",
+        "LC001 VIDEO PAUSED AT:",
         video.currentTime
       );
 
