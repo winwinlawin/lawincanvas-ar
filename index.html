@@ -2,44 +2,275 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Lawin Canvas Test</title>
 
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+  />
+
+  <title>Lawin Canvas</title>
+
+  <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
+  <!-- MindAR -->
   <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    /* WELCOME SCREEN */
+    #welcome {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: rgba(0, 0, 0, 0.92);
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+
+      color: white;
+      text-align: center;
+      padding: 30px;
+      box-sizing: border-box;
+    }
+
+    #welcome h1 {
+      font-size: 30px;
+      margin-bottom: 10px;
+    }
+
+    #welcome p {
+      font-size: 16px;
+      line-height: 1.5;
+      max-width: 320px;
+      opacity: 0.9;
+    }
+
+    #startButton {
+      margin-top: 25px;
+      padding: 15px 35px;
+
+      border: none;
+      border-radius: 30px;
+
+      background: white;
+      color: black;
+
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    /* SCAN MESSAGE */
+    #scanMessage {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+
+      z-index: 1000;
+
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+
+      padding: 10px 18px;
+      border-radius: 20px;
+
+      font-size: 14px;
+
+      display: none;
+    }
+  </style>
 </head>
-<body style="margin:0;">
+
+<body>
+
+  <!-- WELCOME SCREEN -->
+  <div id="welcome">
+
+    <h1>Lawin Canvas</h1>
+
+    <p>
+      Welcome to your AR Experience.<br><br>
+      Tap START, then point your camera at the painting.
+    </p>
+
+    <button id="startButton">
+      START EXPERIENCE
+    </button>
+
+  </div>
+
+  <!-- SCAN MESSAGE -->
+  <div id="scanMessage">
+    Point your camera at the painting
+  </div>
+
 
   <a-scene
-    mindar-image="imageTargetSrc: assets/targets/targets.mind; uiScanning: no; uiLoading: no;"
+    mindar-image="
+      imageTargetSrc: assets/targets/targets.mind;
+      uiScanning: no;
+      uiLoading: no;
+    "
+
     color-space="sRGB"
-    renderer="colorManagement: true, physicallyCorrectLights: true, alpha: true"
+
+    renderer="
+      colorManagement: true;
+      physicallyCorrectLights: true;
+      alpha: true;
+    "
+
     vr-mode-ui="enabled: false"
+
     device-orientation-permission-ui="enabled: false"
   >
+
     <a-assets>
+
       <video
         id="video-LC001"
         src="assets/videos/LC001.mp4"
+
         preload="auto"
+
         loop
+
         playsinline
         webkit-playsinline
+
+        muted
+
         crossorigin="anonymous"
       ></video>
+
     </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity mindar-image-target="targetIndex: 0">
+    <a-camera
+      position="0 0 0"
+      look-controls="enabled: false"
+    ></a-camera>
+
+
+    <!-- PAINTING TARGET -->
+
+    <a-entity
+      id="target-LC001"
+      mindar-image-target="targetIndex: 0"
+    >
+
       <a-video
+        id="arVideo"
         src="#video-LC001"
+
         width="3"
         height="2"
+
         position="0 0 0"
+
+        material="shader: flat;"
       ></a-video>
+
     </a-entity>
+
   </a-scene>
+
+
+  <script>
+
+    const welcome = document.getElementById("welcome");
+    const startButton = document.getElementById("startButton");
+    const scanMessage = document.getElementById("scanMessage");
+
+    const video = document.getElementById("video-LC001");
+    const target = document.getElementById("target-LC001");
+
+
+    /*
+      START BUTTON
+    */
+
+    startButton.addEventListener("click", async function () {
+
+      welcome.style.display = "none";
+
+      scanMessage.style.display = "block";
+
+      /*
+        Prepare video after user interaction.
+        This helps bypass mobile autoplay restrictions.
+      */
+
+      try {
+
+        video.muted = true;
+
+        await video.play();
+
+        video.pause();
+
+        video.currentTime = 0;
+
+      } catch (error) {
+
+        console.log("Video preparation:", error);
+
+      }
+
+    });
+
+
+    /*
+      PAINTING DETECTED
+    */
+
+    target.addEventListener("targetFound", async function () {
+
+      console.log("LC001 TARGET FOUND");
+
+      scanMessage.style.display = "none";
+
+      try {
+
+        video.currentTime = 0;
+
+        video.muted = true;
+
+        await video.play();
+
+        console.log("LC001 VIDEO PLAYING");
+
+      } catch (error) {
+
+        console.log("VIDEO PLAY ERROR:", error);
+
+      }
+
+    });
+
+
+    /*
+      PAINTING LOST
+    */
+
+    target.addEventListener("targetLost", function () {
+
+      console.log("LC001 TARGET LOST");
+
+      video.pause();
+
+    });
+
+  </script>
 
 </body>
 </html>
